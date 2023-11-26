@@ -6,7 +6,6 @@
 
 {% block content %}
 
-
 {% leaflet_map "main" callback="window.main_map_init" %}
 
 <style>
@@ -100,6 +99,41 @@
 
 <script type="text/javascript">
     function main_map_init(map, options) {
+
+        var dataset = new L.GeoJSON.AJAX("{% url 'waterconsumption' %}", {
+            pointToLayer: function(feature, latlng) {
+                return L.circleMarker(latlng, {
+                    fillColor: 'teal',
+                    color: '#537898',
+                    weight: 1,
+                    fillOpacity: 0.5
+                }).on({
+                    mouseover: function(e) {
+                        this.setStyle({color: 'yellow'});
+                    },
+
+                    mouseout: function(e) {
+                        this.setStyle({color: '#537898'});
+                    }
+                });
+            },
+
+            onEachFeature: function(feature, layer) {
+                var radius = calcPropRadius(feature.properties.AvgMonthlyKL);
+
+                var popupText = "<strong>" + feature.properties.Suburb + "</strong>";
+
+                layer.setRadius(radius);
+
+                layer.bindPopup(popupText, { offset: new L.Point(0, -radius) });
+            }
+        }).addTo(map);
+
+        function calcPropRadius(avgmonthlykl) {
+            var scaleFactor = 90;
+            var area = avgmonthlykl * scaleFactor;
+            return Math.sqrt(area/Math.PI)*2;
+        }
 
         var button = new L.Control.Button('Menu', {
             toggleButton: 'active',
@@ -274,3 +308,8 @@
 </script>
 
 {% endblock %}
+
+
+
+
+
