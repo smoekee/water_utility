@@ -35,7 +35,7 @@ for index, row in df_excelReader.iterrows():
     AvgMonthlyKLPredicted = 0
     PredictionAccuracy = 0
     Month = row['Month']
-    Year = row['Yearadf']
+    Year = row['Year']
     DateTime = datetime.now()
     Longitude = row['Longitude']
     Latitude = row['Latitude']
